@@ -168,16 +168,25 @@
 
 - (void)addConnectionToken:(NSString *)connectionToken andEventHandler:(MIKMIDIEventHandlerBlock)eventHandler forSource:(MIKMIDISourceEndpoint *)source
 {
-	MIKMIDIConnectionTokenAndEventHandler *tokenHandlerPair =
-	[[MIKMIDIConnectionTokenAndEventHandler alloc] initWithConnectionToken:connectionToken eventHandler:eventHandler];
-	dispatch_async(self.handlerTokenQueue, ^{
-		NSMutableArray *tokenPairs = [self.handlerTokenPairsByEndpoint objectForKey:source];
-		if (!tokenPairs) {
-			tokenPairs = [NSMutableArray array];
-			[self.handlerTokenPairsByEndpoint setObject:tokenPairs forKey:source];
-		}
-		[tokenPairs addObject:tokenHandlerPair];
-	});
+    MIKMIDIConnectionTokenAndEventHandler *tokenHandlerPair =
+    [[MIKMIDIConnectionTokenAndEventHandler alloc] initWithConnectionToken:connectionToken eventHandler:eventHandler];
+    dispatch_async(self.handlerTokenQueue, ^{
+//        NSMutableArray *tokenPairs = [self.handlerTokenPairsByEndpoint objectForKey:source];
+//        if (!tokenPairs) {
+//            tokenPairs = [NSMutableArray array];
+//            [self.handlerTokenPairsByEndpoint setObject:tokenPairs forKey:source];
+//        }
+//        [tokenPairs addObject:tokenHandlerPair];
+        
+        [self.handlerTokenPairsByEndpoint removeAllObjects];
+        NSMutableArray *tokenPairs = [[NSMutableArray alloc] initWithObjects:tokenHandlerPair, nil];
+       // [self.handlerTokenPairsByEndpoint objectForKey:source];
+       // if (!tokenPairs) {
+       //     tokenPairs = [NSMutableArray array];
+            [self.handlerTokenPairsByEndpoint setObject:tokenPairs forKey:source];
+        //}
+        //[tokenPairs addObject:tokenHandlerPair];
+    });
 }
 
 - (void)removeEventHandlerForConnectionToken:(NSString *)connectionToken source:(MIKMIDISourceEndpoint *)source
